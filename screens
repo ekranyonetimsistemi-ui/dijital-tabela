@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖥️ Ekran Yönetimi - Dijital Tabela</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 25px 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 2.5em;
+        }
+        
+        .header-info h1 {
+            margin: 0;
+            color: #333;
+            font-size: 28px;
+        }
+        
+        .header-info .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Navigation */
+        .nav-pills {
+            background: rgba(255,255,255,0.95);
+            padding: 25px 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-pill {
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .nav-pill.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-pill:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        /* Section */
+        .section {
+            background: rgba(255,255,255,0.95);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Screens Grid */
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .screen-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 5px solid #ddd;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .screen-card.online {
+            border-left-color: #27ae60;
+        }
+        
+        .screen-card.offline {
+            border-left-color: #e74c3c;
+        }
+        
+        .screen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .screen-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .screen-location {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .screen-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .screen-info {
+            margin-bottom: 20px;
+        }
+        
+        .screen-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .screen-info-label {
+            color: #666;
+        }
+        
+        .screen-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .screen-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        /* Groups Grid */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .group-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .group-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .group-stats {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .screen-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .screen-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        
+        .screen-item:last-child {
+            border-bottom: none;
+        }
+        
+        .screen-item-info {
+            flex: 1;
+        }
+        
+        .screen-item-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .screen-item-location {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .screen-item-status {
+            margin-left: 10px;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .btn-warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .btn-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            display: none;
+            z-index: 3000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .notification.success { background: #27ae60; }
+        .notification.error { background: #e74c3c; }
+        .notification.info { background: #3498db; }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .empty-state-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .empty-state-description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .nav-pills {
+                justify-content: center;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: stretch;
+            }
+            
+            .screens-grid,
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">🖥️</div>
+                <div class="header-info">
+                    <h1>Ekran Yönetimi</h1>
+                    <div class="subtitle">Tüm dijital tabela ekranlarını yönetin</div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn" onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
+                <button class="btn btn-danger" onclick="logout()">🚪 Çıkış</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-pills">
+            <a href="#" class="nav-pill active" onclick="showTab('screens')">🖥️ Ekranlar</a>
+            <a href="#" class="nav-pill" onclick="showTab('groups')">👥 Gruplar</a>
+            <a href="#" class="nav-pill" onclick="showTab('assignments')">🎯 İçerik Atama</a>
+        </div>
+
+        <!-- Screens Tab -->
+        <div id="screensTab" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span>🖥️</span>
+                        <span>Ekran Listesi</span>
+                    </div>
+                    <button class="btn btn-success" onclick="showAddScreenModal()">➕ Yeni Ekran Ekle</button>
+                </div>
+                
+                <div class="screens-grid" id="screensGrid">
+                    <!-- Ekranlar buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Groups Tab -->
+        <div id="groupsTab" class="tab-content" style="display: none;">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span>👥</span>
+                        <span>Grup Listesi</span>
+                    </div>
+                    <button class="btn btn-success" onclick="showAddGroupModal()">➕ Yeni Grup Oluştur</button>
+                </div>
+                
+                <div class="groups-grid" id="groupsGrid">
+                    <!-- Gruplar buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignments Tab -->
+        <div id="assignmentsTab" class="tab-content" style="display: none;">
+            <div class="section">
+                <div class="section-title">
+                    <span>🎯</span>
+                    <span>İçerik Atama</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+                    <div>
+                        <h4>📋 Mevcut İçerikler</h4>
+                        <div id="assignmentContentList" style="border: 2px solid #f0f2f5; border-radius: 10px; padding: 15px; max-height: 400px; overflow-y: auto;">
+                            <!-- İçerikler buraya -->
+                        </div>
+                    </div>
+                    <div>
+                        <h4>🎯 Atama Hedefi</h4>
+                        <div class="form-group">
+                            <label>Atama Türü</label>
+                            <select id="assignmentType">
+                                <option value="screen">Tek Ekran</option>
+                                <option value="group">Grup</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Hedef Seç</label>
+                            <select id="assignmentTarget">
+                                <!-- Ekranlar/Gruplar buraya -->
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="assignContent()">✅ İçerik Ata</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Screen Modal -->
+    <div id="addScreenModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddScreenModal()">&times;</span>
+            <h3 style="margin-bottom: 30px;">🖥️ Yeni Ekran Ekle</h3>
+            
+            <form id="addScreenForm">
+                <div class="form-group">
+                    <label>Ekran Adı</label>
+                    <input type="text" id="screenName" required placeholder="Örn: Mağaza Giriş Ekranı">
+                </div>
+                
+                <div class="form-group">
+                    <label>Konum</label>
+                    <input type="text" id="screenLocation" required placeholder="Örn: İstanbul Mağaza - Giriş">
+                </div>
+                
+                <div class="form-group">
+                    <label>Grup</label>
+                    <select id="screenGroup">
+                        <option value="">Grup Seçin</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="screenDescription" rows="3" placeholder="Ekran hakkında notlar..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Ekran Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Group Modal -->
+    <div id="addGroupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddGroupModal()">&times;</span>
+            <h3 style="margin-bottom: 30px;">👥 Yeni Grup Oluştur</h3>
+            
+            <form id="addGroupForm">
+                <div class="form-group">
+                    <label>Grup Adı</label>
+                    <input type="text" id="groupName" required placeholder="Örn: İstanbul Mağazaları">
+                </div>
+                
+                <div class="form-group">
+                    <label>Grup Rengi</label>
+                    <input type="color" id="groupColor" value="#667eea">
+                </div>
+                
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="groupDescription" rows="3" placeholder="Grup hakkında açıklama..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Grup Oluştur</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global değişkenler
+        let currentUser = null;
+        let screens = [];
+        let groups = [];
+        let uploadedFiles = [];
+        let assignments = {};
+        let selectedContentIndex = null;
+
+        // Sayfa yüklendiğinde
+        window.addEventListener('load', () => {
+            initializeScreenManagement();
+        });
+
+        // Ekran yönetimi başlatma
+        function initializeScreenManagement() {
+            // Oturum kontrolü
+            checkSession();
+            
+            // Sistem verilerini yükle
+            loadSystemData();
+            
+            // Sayfayı güncelle
+            updateScreensTab();
+            updateGroupsTab();
+            updateAssignmentsTab();
+            
+            console.log('🖥️ Ekran yönetimi yüklendi');
+        }
+
+        // Oturum kontrolü
+        function checkSession() {
+            const session = localStorage.getItem('admin_session');
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(session);
+        }
+
+        // Sistem verilerini yükle
+        function loadSystemData() {
+            screens = JSON.parse(localStorage.getItem('digital_screens') || '[]');
+            groups = JSON.parse(localStorage.getItem('screen_groups') || '[]');
+            uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+            assignments = JSON.parse(localStorage.getItem('content_assignments') || '{}');
+        }
+
+        // Veriyi kaydet
+        function saveSystemData() {
+            localStorage.setItem('digital_screens', JSON.stringify(screens));
+            localStorage.setItem('screen_groups', JSON.stringify(groups));
+            localStorage.setItem('content_assignments', JSON.stringify(assignments));
+        }
+
+        // Tab değiştirme
+        function showTab(tabName) {
+            // Tüm tabları gizle
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Tüm nav-pill'leri deaktif et
+            document.querySelectorAll('.nav-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            
+            // Seçili tabı göster
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Seçili nav-pill'i aktif et
+            event.target.classList.add('active');
+            
+            // Tab içeriğini güncelle
+            switch(tabName) {
+                case 'screens':
+                    updateScreensTab();
+                    break;
+                case 'groups':
+                    updateGroupsTab();
+                    break;
+                case 'assignments':
+                    updateAssignmentsTab();
+                    break;
+            }
+        }
+
+        // Ekranlar tabını güncelle
+        function updateScreensTab() {
+            const container = document.getElementById('screensGrid');
+            
+            if (screens.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state-icon">🖥️</div>
+                        <div class="empty-state-title">Henüz ekran eklenmemiş</div>
+                        <div class="empty-state-description">
+                            İlk dijital tabela ekranınızı ekleyerek başlayın
+                        </div>
+                        <button class="btn btn-success" onclick="showAddScreenModal()">➕ İlk Ekranı Ekle</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = screens.map(screen => {
+                const group = groups.find(g => g.id === screen.groupId);
+                const timeDiff = Date.now() - new Date(screen.lastSeen).getTime();
+                const minutesAgo = Math.floor(timeDiff / 60000);
+                const assignedContent = assignments[screen.id] ? assignments[screen.id].length : 0;
+                
+                return `
+                    <div class="screen-card ${screen.status}">
+                        <div class="screen-header">
+                            <div>
+                                <div class="screen-title">${screen.name}</div>
+                                <div class="screen-location">📍 ${screen.location}</div>
+                            </div>
+                            <span class="screen-status status-${screen.status}">
+                                ${screen.status === 'online' ? '🟢 Aktif' : '🔴 Çevrimdışı'}
+                            </span>
+                        </div>
+                        
+                        <div class="screen-info">
+                            <div class="screen-info-item">
+                                <span class="screen-info-label">Grup:</span>
+                                <span class="screen-info-value">${group ? group.name : 'Grup Yok'}</span>
+                            </div>
+                            <div class="screen-info-item">
+                                <span class="screen-info-label">Son görülme:</span>
+                                <span class="screen-info-value">${minutesAgo < 1 ? 'Şimdi' : minutesAgo + ' dk önce'}</span>
+                            </div>
+                            <div class="screen-info-item">
+                                <span class="screen-info-label">Atanmış içerik:</span>
+                                <span class="screen-info-value">${assignedContent} adet</span>
+                            </div>
+                            <div class="screen-info-item">
+                                <span class="screen-info-label">Oluşturulma:</span>
+                                <span class="screen-info-value">${new Date(screen.created).toLocaleDateString('tr-TR')}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="screen-actions">
+                            <button class="btn btn-small btn-success" onclick="openScreenControl('${screen.id}')">🎮 Kontrol Et</button>
+                            <button class="btn btn-small btn-info" onclick="openDisplayScreen('${screen.id}')">📺 Görüntüle</button>
+                            <button class="btn btn-small btn-warning" onclick="editScreen('${screen.id}')">✏️ Düzenle</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteScreen('${screen.id}')">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Gruplar tabını güncelle
+        function updateGroupsTab() {
+            const container = document.getElementById('groupsGrid');
+            
+            if (groups.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state-icon">👥</div>
+                        <div class="empty-state-title">Henüz grup oluşturulmamış</div>
+                        <div class="empty-state-description">
+                            Ekranları organize etmek için gruplar oluşturun
+                        </div>
+                        <button class="btn btn-success" onclick="showAddGroupModal()">➕ İlk Grubu Oluştur</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = groups.map(group => {
+                const groupScreens = screens.filter(s => s.groupId === group.id);
+                const onlineCount = groupScreens.filter(s => s.status === 'online').length;
+                
+                return `
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div>
+                                <div class="group-title" style="color: ${group.color};">${group.name}</div>
+                                <div class="group-description">${group.description}</div>
+                            </div>
+                            <div class="group-stats">
+                                <div>${groupScreens.length} ekran</div>
+                                <div>${onlineCount} aktif</div>
+                            </div>
+                        </div>
+                        
+                        <div class="screen-list">
+                            ${groupScreens.length > 0 ? groupScreens.map(screen => `
+                                <div class="screen-item">
+                                    <div class="screen-item-info">
+                                        <div class="screen-item-name">${screen.name}</div>
+                                        <div class="screen-item-location">${screen.location}</div>
+                                    </div>
+                                    <div class="screen-item-status">
+                                        <span class="screen-status status-${screen.status}">
+                                            ${screen.status === 'online' ? '🟢' : '🔴'}
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('') : '<div style="text-align: center; color: #666; font-style: italic; padding: 20px;">Bu grupta ekran bulunmuyor</div>'}
+                        </div>
+                        
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn btn-small btn-success" onclick="openGroupDisplays('${group.id}')">📺 Tüm Ekranları Aç</button>
+                            <button class="btn btn-small btn-warning" onclick="editGroup('${group.id}')">✏️ Düzenle</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteGroup('${group.id}')">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // İçerik atama tabını güncelle
+        function updateAssignmentsTab() {
+            // İçerik listesi
+            const contentList = document.getElementById('assignmentContentList');
+            
+            if (uploadedFiles.length === 0) {
+                contentList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Henüz içerik yüklenmemiş</div>';
+            } else {
+                contentList.innerHTML = uploadedFiles.map((file, index) => `
+                    <div style="display: flex; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" 
+                         onclick="selectContent(${index})" id="content-${index}">
+                        <div style="margin-right: 10px; font-size: 1.5em;">
+                            ${file.type === 'image' ? '🖼️' : '🎥'}
+                        </div>
+                        <div>
+                            <div style="font-weight: 500;">${file.name}</div>
+                            <div style="font-size: 12px; color: #666;">${file.type === 'image' ? 'Fotoğraf' : 'Video'}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Hedef listesi güncelle
+            updateAssignmentTargets();
+        }
+
+        // Atama hedeflerini güncelle
+        function updateAssignmentTargets() {
+            const typeSelect = document.getElementById('assignmentType');
+            const targetSelect = document.getElementById('assignmentTarget');
+            
+            typeSelect.addEventListener('change', () => {
+                const type = typeSelect.value;
+                targetSelect.innerHTML = '';
+                
+                if (type === 'screen') {
+                    screens.forEach(screen => {
+                        const option = document.createElement('option');
+                        option.value = screen.id;
+                        option.textContent = `${screen.name} (${screen.location})`;
+                        targetSelect.appendChild(option);
+                    });
+                } else if (type === 'group') {
+                    groups.forEach(group => {
+                        const option = document.createElement('option');
+                        option.value = group.id;
+                        option.textContent = group.name;
+                        targetSelect.appendChild(option);
+                    });
+                }
+            });
+
+            // İlk yükleme
+            typeSelect.dispatchEvent(new Event('change'));
+        }
+
+        // İçerik seçimi
+        function selectContent(index) {
+            // Önceki seçimi temizle
+            document.querySelectorAll('[id^="content-"]').forEach(item => {
+                item.style.background = 'transparent';
+                item.style.borderColor = 'transparent';
+            });
+            
+            // Yeni seçimi işaretle
+            const contentItem = document.getElementById(`content-${index}`);
+            contentItem.style.background = '#e3f2fd';
+            contentItem.style.borderColor = '#667eea';
+            
+            selectedContentIndex = index;
+        }
+
+        // İçerik atama
+        function assignContent() {
+            if (selectedContentIndex === null) {
+                showNotification('⚠️ Lütfen bir içerik seçin!', 'error');
+                return;
+            }
+
+            const assignmentType = document.getElementById('assignmentType').value;
+            const targetId = document.getElementById('assignmentTarget').value;
+            
+            if (!targetId) {
+                showNotification('⚠️ Lütfen bir hedef seçin!', 'error');
+                return;
+            }
+
+            const selectedContent = uploadedFiles[selectedContentIndex];
+
+            // Atama kaydet
+            if (!assignments[targetId]) {
+                assignments[targetId] = [];
+            }
+            
+            // Duplicate kontrolü
+            const existingAssignment = assignments[targetId].find(a => a.contentIndex === selectedContentIndex);
+            if (existingAssignment) {
+                showNotification('⚠️ Bu içerik zaten atanmış!', 'error');
+                return;
+            }
+            
+            assignments[targetId].push({
+                contentIndex: selectedContentIndex,
+                contentName: selectedContent.name,
+                assignedAt: new Date().toISOString(),
+                type: assignmentType
+            });
+
+            saveSystemData();
+            
+            const targetName = assignmentType === 'screen' ? 
+                screens.find(s => s.id === targetId)?.name : 
+                groups.find(g => g.id === targetId)?.name;
+                
+            addActivity(`İçerik atandı: ${selectedContent.name} → ${targetName}`);
+            showNotification('✅ İçerik başarıyla atandı!', 'success');
+            
+            // Seçimi temizle
+            selectedContentIndex = null;
+            document.querySelectorAll('[id^="content-"]').forEach(item => {
+                item.style.background = 'transparent';
+                item.style.borderColor = 'transparent';
+            });
+            
+            // Ekranlar tabını güncelle
+            updateScreensTab();
+        }
+
+        // Modal fonksiyonları
+        function showAddScreenModal() {
+            // Grup seçeneklerini yükle
+            const groupSelect = document.getElementById('screenGroup');
+            groupSelect.innerHTML = '<option value="">Grup Seçin</option>';
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.id;
+                option.textContent = group.name;
+                groupSelect.appendChild(option);
+            });
+            
+            document.getElementById('addScreenModal').style.display = 'block';
+        }
+
+        function closeAddScreenModal() {
+            document.getElementById('addScreenModal').style.display = 'none';
+            document.getElementById('addScreenForm').reset();
+        }
+
+        function showAddGroupModal() {
+            document.getElementById('addGroupModal').style.display = 'block';
+        }
+
+        function closeAddGroupModal() {
+            document.getElementById('addGroupModal').style.display = 'none';
+            document.getElementById('addGroupForm').reset();
+        }
+
+        // Form işlemleri
+        document.getElementById('addScreenForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newScreen = {
+                id: 'screen_' + Date.now(),
+                name: document.getElementById('screenName').value,
+                location: document.getElementById('screenLocation').value,
+                groupId: document.getElementById('screenGroup').value || null,
+                status: 'offline',
+                lastSeen: new Date().toISOString(),
+                description: document.getElementById('screenDescription').value,
+                created: new Date().toISOString()
+            };
+            
+            screens.push(newScreen);
+            saveSystemData();
+            addActivity(`Yeni ekran eklendi: ${newScreen.name}`);
+            
+            closeAddScreenModal();
+            updateScreensTab();
+            showNotification('✅ Ekran başarıyla eklendi!', 'success');
+        });
+
+        document.getElementById('addGroupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newGroup = {
+                id: 'group_' + Date.now(),
+                name: document.getElementById('groupName').value,
+                color: document.getElementById('groupColor').value,
+                description: document.getElementById('groupDescription').value,
+                created: new Date().toISOString()
+            };
+            
+            groups.push(newGroup);
+            saveSystemData();
+            addActivity(`Yeni grup oluşturuldu: ${newGroup.name}`);
+            
+            closeAddGroupModal();
+            updateGroupsTab();
+            showNotification('✅ Grup başarıyla oluşturuldu!', 'success');
+        });
+
+        // Ekran fonksiyonları
+        function openScreenControl(screenId) {
+            const screen = screens.find(s => s.id === screenId);
+            if (screen) {
+                const controlUrl = `control.html?id=${screenId}`;
+                window.open(controlUrl, `control_${screenId}`, 'width=1400,height=900');
+                addActivity(`Ekran kontrolü açıldı: ${screen.name}`);
+            }
+        }
+
+        function openDisplayScreen(screenId) {
+            const screen = screens.find(s => s.id === screenId);
+            if (screen) {
+                const displayUrl = `display.html?id=${screenId}`;
+                window.open(displayUrl, `display_${screenId}`, 'width=1920,height=1080,fullscreen=yes');
+                addActivity(`Görüntüleme ekranı açıldı: ${screen.name}`);
+                showNotification(`📺 ${screen.name} görüntüleme ekranı açıldı!`, 'success');
+            }
+        }
+
+        function deleteScreen(screenId) {
+            if (confirm('Bu ekranı silmek istediğinizden emin misiniz?')) {
+                const screenIndex = screens.findIndex(s => s.id === screenId);
+                if (screenIndex > -1) {
+                    const screenName = screens[screenIndex].name;
+                    screens.splice(screenIndex, 1);
+                    
+                    // Ekran atamalarını da sil
+                    delete assignments[screenId];
+                    
+                    saveSystemData();
+                    addActivity(`Ekran silindi: ${screenName}`);
+                    
+                    updateScreensTab();
+                    showNotification('🗑️ Ekran silindi!', 'success');
+                }
+            }
+        }
+
+        function deleteGroup(groupId) {
+            if (confirm('Bu grubu silmek istediğinizden emin misiniz? Gruptaki ekranlar gruptan çıkarılacak.')) {
+                const groupIndex = groups.findIndex(g => g.id === groupId);
+                if (groupIndex > -1) {
+                    const groupName = groups[groupIndex].name;
+                    
+                    // Grup ekranlarını gruptan çıkar
+                    screens.forEach(screen => {
+                        if (screen.groupId === groupId) {
+                            screen.groupId = null;
+                        }
+                    });
+                    
+                    // Grup atamalarını sil
+                    delete assignments[groupId];
+                    
+                    groups.splice(groupIndex, 1);
+                    saveSystemData();
+                    addActivity(`Grup silindi: ${groupName}`);
+                    
+                    updateGroupsTab();
+                    updateScreensTab();
+                    showNotification('🗑️ Grup silindi!', 'success');
+                }
+            }
+        }
+
+        function openGroupDisplays(groupId) {
+            const group = groups.find(g => g.id === groupId);
+            const groupScreens = screens.filter(s => s.groupId === groupId);
+            
+            if (groupScreens.length === 0) {
+                showNotification('⚠️ Bu grupta ekran bulunmuyor!', 'error');
+                return;
+            }
+            
+            if (confirm(`${group.name} grubundaki ${groupScreens.length} ekranı açmak istediğinizden emin misiniz?`)) {
+                groupScreens.forEach((screen, index) => {
+                    setTimeout(() => {
+                        const displayUrl = `display.html?id=${screen.id}`;
+                        window.open(displayUrl, `display_${screen.id}`, 'width=1280,height=720');
+                    }, index * 500);
+                });
+                
+                addActivity(`Grup ekranları açıldı: ${group.name} (${groupScreens.length} ekran)`);
+                showNotification(`📺 ${group.name} - ${groupScreens.length} ekran açıldı!`, 'success');
+            }
+        }
+
+        // Yardımcı fonksiyonlar
+        function addActivity(message) {
+            const activities = JSON.parse(localStorage.getItem('system_activities') || '[]');
+            activities.push({
+                id: Date.now(),
+                message: message,
+                time: new Date().toISOString()
+            });
+            
+            if (activities.length > 50) {
+                activities.splice(0, activities.length - 50);
+            }
+            
+            localStorage.setItem('system_activities', JSON.stringify(activities));
+        }
+
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('admin_session');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => notification.style.display = 'none', 3000);
+        }
+
+        // Modal dışına tıklayınca kapat
+        window.addEventListener('click', function(event) {
+            const modals = ['addScreenModal', 'addGroupModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        console.log('🖥️ Ekran Yönetim Sistemi v2.0');
+    </script>
+</body>
+</html>
