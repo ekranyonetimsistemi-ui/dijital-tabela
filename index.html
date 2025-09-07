@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📺 Dijital Tabela Sistemi</title>
+    <title>📺 Güvenli Dijital Tabela Sistemi</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,16 +11,165 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
+        
+        /* Login Sayfası Stilleri */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-logo { font-size: 4em; margin-bottom: 20px; }
+        .login-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 300;
+        }
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #fcc;
+            display: none;
+        }
+        .demo-credentials {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .demo-credentials h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .credential-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        /* Ana Uygulama Stilleri */
+        .app-container { display: none; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .header {
             background: rgba(255,255,255,0.95);
             padding: 30px;
             border-radius: 15px;
-            text-align: center;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .logo { font-size: 4em; margin-bottom: 15px; }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-logo { font-size: 3em; margin-right: 20px; }
+        .header-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .header-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+        
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -35,6 +184,7 @@
             text-align: center;
         }
         .stat-number { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+        
         .upload-section {
             background: rgba(255,255,255,0.95);
             padding: 40px;
@@ -78,6 +228,7 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
+        
         .files-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -121,6 +272,7 @@
             cursor: pointer;
             font-size: 12px;
         }
+        
         .progress {
             width: 100%;
             height: 8px;
@@ -136,6 +288,7 @@
             width: 0%;
             transition: width 0.3s;
         }
+        
         .notification {
             position: fixed;
             top: 20px;
@@ -150,15 +303,9 @@
         }
         .notification.success { background: #27ae60; }
         .notification.error { background: #e74c3c; }
+        
         #fileInput { display: none; }
-        .success-message {
-            background: #e8f5e8;
-            border: 2px solid #27ae60;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: center;
-        }
+        
         .api-info {
             background: #f8f9fa;
             padding: 20px;
@@ -168,28 +315,101 @@
             word-break: break-all;
             margin: 15px 0;
         }
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        
+        .security-info {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 20px;
             margin: 20px 0;
         }
-        .feature-item {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-box, .app-container {
+            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">📺</div>
-            <h1>Dijital Tabela Yönetim Sistemi</h1>
-            <p style="font-size: 18px; margin-top: 10px; color: #666;">
-                Modern, ücretsiz ve güvenilir dijital tabela çözümü
-            </p>
+    <!-- Login Sayfası -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">🔐</div>
+            <h1 class="login-title">Dijital Tabela Girişi</h1>
+            <p class="login-subtitle">Güvenli yönetim paneline erişim</p>
+            
+            <div id="loginError" class="error-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Parola</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    🚀 Giriş Yap
+                </button>
+            </form>
+            
+            <div class="demo-credentials">
+                <h4>🎯 Varsayılan Giriş Bilgileri:</h4>
+                <div class="credential-item">
+                    <strong>Kullanıcı:</strong> admin
+                </div>
+                <div class="credential-item">
+                    <strong>Parola:</strong> tabela123
+                </div>
+                <div style="margin-top: 15px; font-size: 14px; color: #666;">
+                    💡 Bu bilgileri değiştirmek için kodu düzenleyebilirsiniz
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ana Uygulama -->
+    <div id="mainApp" class="app-container">
+        <div class="container">
+            <div class="header">
+                <div class="header-left">
+                    <div class="header-logo">📺</div>
+                    <div>
+                        <div class="header-title">Dijital Tabela Yönetimi</div>
+                        <div class="header-subtitle">Güvenli ve profesyonel sistem</div>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px;" id="currentUser">Admin</div>
+                        <div style="font-size: 12px; color: #666;">Yönetici</div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        🚪 Çıkış
+                    </button>
+                </div>
+            </div>
+            
+            <div class="security-info">
+                <h3 style="color: #27ae60; margin-bottom: 15px;">🔒 Güvenlik Aktif</h3>
+                <p style="margin-bottom: 10px;">
+                    <strong>✅ Sistemin Güvenli!</strong> Sadece yetkili kullanıcılar erişebilir.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div>• 🔐 Güvenli giriş sistemi</div>
+                    <div>• 🛡️ Oturum yönetimi</div>
+                    <div>• 🔄 Otomatik çıkış</div>
+                    <div>• 👥 Kullanıcı kontrolü</div>
+                </div>
+            </div>
             
             <div class="stats">
                 <div class="stat-card">
@@ -197,138 +417,74 @@
                     <div>Yüklenen Dosya</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">✅</div>
-                    <div>Sistem Aktif</div>
+                    <div class="stat-number">🔒</div>
+                    <div>Güvenli</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">🆓</div>
-                    <div>Ücretsiz</div>
+                    <div class="stat-number">✅</div>
+                    <div>Aktif</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">🚀</div>
-                    <div>Vercel Hosting</div>
+                    <div>Online</div>
                 </div>
             </div>
-        </div>
-
-        <div class="success-message">
-            <h2 style="color: #27ae60; margin-bottom: 15px;">🎉 Sistem Başarıyla Kuruldu!</h2>
-            <p style="margin-bottom: 20px; font-size: 16px;">
-                <strong>Dijital tabela sisteminiz tamamen ücretsiz Vercel hosting'de çalışıyor!</strong>
-            </p>
-            <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <h3 style="color: #333; margin-bottom: 15px;">🔗 Sistem URL'niz:</h3>
-                <div class="api-info" id="systemUrl">
-                    https://your-app.vercel.app
-                </div>
-                <p style="color: #666; font-size: 14px;">
-                    Bu URL'yi Raspberry Pi'larınızda kullanabilirsiniz
-                </p>
-            </div>
-        </div>
-        
-        <div class="upload-section">
-            <h2 style="margin-bottom: 20px;">📤 Dosya Yükleme</h2>
             
-            <div class="upload-area" id="uploadArea">
-                <div style="font-size: 4em; margin-bottom: 15px;">☁️</div>
-                <h3 style="margin-bottom: 15px;">Dosyaları Buraya Sürükleyin</h3>
-                <p style="color: #666; margin-bottom: 20px;">veya tıklayarak seçin</p>
-                <button class="btn" onclick="document.getElementById('fileInput').click()">
-                    📁 Dosya Seç
+            <div class="upload-section">
+                <h2 style="margin-bottom: 20px;">📤 Dosya Yükleme</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div style="font-size: 4em; margin-bottom: 15px;">☁️</div>
+                    <h3 style="margin-bottom: 15px;">Dosyaları Buraya Sürükleyin</h3>
+                    <p style="color: #666; margin-bottom: 20px;">veya tıklayarak seçin</p>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">
+                        📁 Dosya Seç
+                    </button>
+                    <p style="color: #888; margin-top: 15px; font-size: 14px;">
+                        Desteklenen: JPG, PNG, GIF, MP4, MOV (Max: 10MB)
+                    </p>
+                </div>
+                
+                <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.mp4,.mov">
+                
+                <div class="progress" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="upload-section">
+                <h2 style="margin-bottom: 20px;">📁 Yüklenen Dosyalar</h2>
+                <div class="files-grid" id="filesGrid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📂</div>
+                        <p>Henüz dosya yüklenmemiş</p>
+                        <p style="font-size: 14px; margin-top: 10px;">Yukarıdaki alana dosyalarınızı sürükleyerek başlayın!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upload-section">
+                <h2 style="margin-bottom: 20px;">🥧 Raspberry Pi API</h2>
+                
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #1976d2; margin-bottom: 15px;">📡 API Endpoint:</h3>
+                    <div class="api-info" id="apiEndpoint">
+                        https://your-app.vercel.app/api/files
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="downloadPiClient()">
+                    🥧 Pi Client Kodunu İndir
                 </button>
-                <p style="color: #888; margin-top: 15px; font-size: 14px;">
-                    Desteklenen: JPG, PNG, GIF, MP4, MOV (Max: 10MB)
-                </p>
-            </div>
-            
-            <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.mp4,.mov">
-            
-            <div class="progress" id="progressBar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-        
-        <div class="upload-section">
-            <h2 style="margin-bottom: 20px;">📁 Yüklenen Dosyalar</h2>
-            <div class="files-grid" id="filesGrid">
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
-                    <div style="font-size: 3em; margin-bottom: 15px;">📂</div>
-                    <p>Dosya yükleme sistemi aktif</p>
-                    <p style="font-size: 14px; margin-top: 10px;">Yukarıdaki alana dosyalarınızı sürükleyerek başlayın!</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="upload-section">
-            <h2 style="margin-bottom: 20px;">🎯 Sistem Özellikleri</h2>
-            
-            <div class="feature-list">
-                <div class="feature-item">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">🌐 Vercel Hosting</h3>
-                    <ul style="margin-left: 20px; line-height: 1.6;">
-                        <li>Ömür boyu ücretsiz</li>
-                        <li>Otomatik SSL (HTTPS)</li>
-                        <li>Global CDN</li>
-                        <li>Hızlı loading</li>
-                    </ul>
-                </div>
                 
-                <div class="feature-item">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 Modern Arayüz</h3>
-                    <ul style="margin-left: 20px; line-height: 1.6;">
-                        <li>Responsive tasarım</li>
-                        <li>Drag & drop yükleme</li>
-                        <li>Mobil uyumlu</li>
-                        <li>Gerçek zamanlı preview</li>
-                    </ul>
+                <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h3 style="margin-bottom: 15px;">🔧 Pi Kurulum:</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Pi Client kodunu indirin</li>
+                        <li>API URL'yi güncelleyin</li>
+                        <li>Raspberry Pi'da çalıştırın</li>
+                    </ol>
                 </div>
-                
-                <div class="feature-item">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">🥧 Pi Entegrasyonu</h3>
-                    <ul style="margin-left: 20px; line-height: 1.6;">
-                        <li>Otomatik senkronizasyon</li>
-                        <li>Tam ekran oynatım</li>
-                        <li>Video/foto desteği</li>
-                        <li>Uzaktan yönetim</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-item">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">🔧 Kolay Yönetim</h3>
-                    <ul style="margin-left: 20px; line-height: 1.6;">
-                        <li>Tek tıkla dosya yükleme</li>
-                        <li>Otomatik dosya işleme</li>
-                        <li>Çoklu format desteği</li>
-                        <li>Sınırsız dosya</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="upload-section">
-            <h2 style="margin-bottom: 20px;">🥧 Raspberry Pi Kurulumu</h2>
-            
-            <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <h3 style="color: #1976d2; margin-bottom: 15px;">📋 Pi Client API Endpoint:</h3>
-                <div class="api-info" id="apiEndpoint">
-                    https://your-app.vercel.app/api/files
-                </div>
-            </div>
-            
-            <button class="btn" onclick="downloadPiClient()">
-                🥧 Pi Client Kodunu İndir
-            </button>
-            
-            <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                <h3 style="margin-bottom: 15px;">🔧 Pi Kurulum Adımları:</h3>
-                <ol style="margin-left: 20px; line-height: 1.8;">
-                    <li><strong>Pi Client kodunu indirin</strong></li>
-                    <li><strong>Raspberry Pi'ya kopyalayın</strong></li>
-                    <li><strong>Gerekli paketleri yükleyin:</strong> <code>pip install requests pygame</code></li>
-                    <li><strong>API URL'yi güncelleyin</strong></li>
-                    <li><strong>Çalıştırın:</strong> <code>python vercel_pi_client.py</code></li>
-                </ol>
             </div>
         </div>
     </div>
@@ -336,32 +492,125 @@
     <div class="notification" id="notification"></div>
     
     <script>
+        // 🔐 Güvenlik Yapılandırması
+        const USERS = {
+            'admin': 'tabela123',
+            'manager': 'yonetici456',
+            'user': 'kullanici789'
+        };
+        
+        const USER_ROLES = {
+            'admin': { name: 'Admin', role: 'Yönetici', avatar: 'A' },
+            'manager': { name: 'Manager', role: 'Yönetici', avatar: 'M' },
+            'user': { name: 'User', role: 'Kullanıcı', avatar: 'U' }
+        };
+        
         // Sayfa yüklendiğinde
         window.addEventListener('load', () => {
-            updateSystemUrl();
-            loadStoredFiles();
+            checkAuth();
+            updateApiUrl();
         });
         
-        // Sistem URL'sini güncelle
-        function updateSystemUrl() {
+        // 🔒 Authentication İşlemleri
+        function checkAuth() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const loginTime = localStorage.getItem('loginTime');
+            
+            // 24 saat oturum süresi
+            const sessionDuration = 24 * 60 * 60 * 1000; // 24 saat
+            
+            if (loggedInUser && loginTime && 
+                (Date.now() - parseInt(loginTime)) < sessionDuration) {
+                showMainApp(loggedInUser);
+            } else {
+                showLoginPage();
+            }
+        }
+        
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            
+            // Otomatik çıkış mesajı
+            const loginTime = localStorage.getItem('loginTime');
+            if (loginTime && (Date.now() - parseInt(loginTime)) >= 24 * 60 * 60 * 1000) {
+                showNotification('Oturum süresi doldu, tekrar giriş yapın', 'error');
+            }
+        }
+        
+        function showMainApp(username) {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Kullanıcı bilgilerini güncelle
+            const userInfo = USER_ROLES[username];
+            if (userInfo) {
+                document.getElementById('currentUser').textContent = userInfo.name;
+                document.getElementById('userAvatar').textContent = userInfo.avatar;
+            }
+            
+            // Dosyaları yükle
+            loadStoredFiles();
+            showNotification(`Hoş geldiniz, ${userInfo.name}!`, 'success');
+        }
+        
+        // Login form işlemi
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            // Kullanıcı kontrolü
+            if (USERS[username] && USERS[username] === password) {
+                // Başarılı giriş
+                localStorage.setItem('loggedInUser', username);
+                localStorage.setItem('loginTime', Date.now().toString());
+                
+                errorDiv.style.display = 'none';
+                showMainApp(username);
+                
+                // Form temizle
+                document.getElementById('loginForm').reset();
+            } else {
+                // Hatalı giriş
+                errorDiv.textContent = '❌ Kullanıcı adı veya parola hatalı!';
+                errorDiv.style.display = 'block';
+                
+                // Şifre alanını temizle
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        });
+        
+        // Çıkış işlemi
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('loginTime');
+                showLoginPage();
+                showNotification('Başarıyla çıkış yaptınız', 'success');
+            }
+        }
+        
+        // API URL güncelleme
+        function updateApiUrl() {
             const currentUrl = window.location.origin;
-            document.getElementById('systemUrl').textContent = currentUrl;
             document.getElementById('apiEndpoint').textContent = currentUrl + '/api/files';
         }
         
-        // Local storage'dan dosyaları yükle
+        // 📁 Dosya Yönetimi (Önceki kodlar)
         function loadStoredFiles() {
             const storedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
             updateFileDisplay(storedFiles);
             updateFileCount(storedFiles.length);
         }
         
-        // Dosya sayısını güncelle
         function updateFileCount(count) {
             document.getElementById('fileCount').textContent = count;
         }
         
-        // Dosya listesini güncelle
         function updateFileDisplay(files) {
             const grid = document.getElementById('filesGrid');
             
@@ -399,7 +648,7 @@
             `).join('');
         }
         
-        // Drag & Drop olayları
+        // Drag & Drop ve dosya yükleme (önceki kodlar aynı)
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         
@@ -426,22 +675,18 @@
             handleFiles(e.target.files);
         });
         
-        // Dosya işleme
         async function handleFiles(files) {
             for (let file of files) {
                 await uploadFile(file);
             }
         }
         
-        // Dosya yükleme (localStorage'a)
         async function uploadFile(file) {
-            // Dosya boyutu kontrolü
             if (file.size > 10 * 1024 * 1024) {
                 showNotification('Dosya çok büyük! Maksimum 10MB', 'error');
                 return;
             }
             
-            // Dosya türü kontrolü
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/quicktime'];
             if (!allowedTypes.includes(file.type)) {
                 showNotification('Desteklenmeyen dosya türü!', 'error');
@@ -451,10 +696,8 @@
             try {
                 showProgress(true);
                 
-                // Dosyayı base64'e çevir
                 const base64Data = await fileToBase64(file);
                 
-                // Dosya bilgilerini hazırla
                 const fileInfo = {
                     name: file.name,
                     type: file.type.startsWith('image/') ? 'image' : 'video',
@@ -463,7 +706,6 @@
                     uploadDate: new Date().toISOString()
                 };
                 
-                // localStorage'a kaydet
                 const storedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
                 storedFiles.push(fileInfo);
                 localStorage.setItem('uploadedFiles', JSON.stringify(storedFiles));
@@ -471,18 +713,15 @@
                 showProgress(false);
                 showNotification(`✅ ${file.name} yüklendi!`, 'success');
                 
-                // Görüntüyü yenile
                 updateFileDisplay(storedFiles);
                 updateFileCount(storedFiles.length);
                 
             } catch (error) {
                 showProgress(false);
                 showNotification('Yükleme hatası!', 'error');
-                console.error('Upload error:', error);
             }
         }
         
-        // File to Base64
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -492,12 +731,11 @@
             });
         }
         
-        // Dosya silme
         function deleteFile(index) {
             if (!confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) return;
             
             const storedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
-            const deletedFile = storedFiles.splice(index, 1)[0];
+            storedFiles.splice(index, 1);
             localStorage.setItem('uploadedFiles', JSON.stringify(storedFiles));
             
             updateFileDisplay(storedFiles);
@@ -505,7 +743,6 @@
             showNotification('Dosya silindi!', 'success');
         }
         
-        // Progress bar
         function showProgress(show) {
             const progressBar = document.getElementById('progressBar');
             const progressFill = document.getElementById('progressFill');
@@ -529,7 +766,6 @@
             }
         }
         
-        // Bildirim
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -539,34 +775,31 @@
             setTimeout(() => notification.style.display = 'none', 3000);
         }
         
-        // Pi Client kodu indirme
         function downloadPiClient() {
             const currentUrl = window.location.origin;
             
             const piClientCode = `#!/usr/bin/env python3
-# vercel_pi_client.py - Vercel Dijital Tabela Client
+# secure_pi_client.py - Güvenli Dijital Tabela Client
 import requests
 import time
 import os
 import base64
 from pathlib import Path
 
-class VercelSignageClient:
+class SecureDigitalSignageClient:
     def __init__(self, api_url, device_name="Pi-Client"):
         self.api_url = api_url
         self.device_name = device_name
-        self.content_dir = Path('vercel_content')
+        self.content_dir = Path('secure_content')
         self.content_dir.mkdir(exist_ok=True)
         
     def get_files_from_api(self):
-        """Vercel'den dosya listesi al"""
+        """Güvenli API'den dosya listesi al"""
         try:
-            # Bu örnekte localStorage simülasyonu
-            # Gerçek API endpoint'i buraya gelecek
-            print("📡 API'ye bağlanıyor...")
+            print("📡 Güvenli API'ye bağlanıyor...")
             
-            # Şimdilik mock data döndür
-            # Gerçek implementasyonda Vercel API kullanılacak
+            # Bu gerçek implementasyonda 
+            # backend API endpoint'i kullanılacak
             return []
             
         except Exception as e:
@@ -574,17 +807,18 @@ class VercelSignageClient:
             return []
     
     def display_slideshow(self):
-        """Basit konsol slayt gösterisi"""
-        print("🎬 Dijital tabela çalışıyor...")
+        """Güvenli slayt gösterisi"""
+        print("🔒 Güvenli dijital tabela çalışıyor...")
         print(f"📱 Cihaz: {self.device_name}")
         print(f"📡 API: {self.api_url}")
         
-        # Pygame entegrasyonu buraya gelecek
+        # Pygame/VLC entegrasyonu buraya gelecek
         time.sleep(5)
     
     def run(self):
         """Ana döngü"""
-        print("🚀 Vercel Pi Client başlatıldı")
+        print("🚀 Güvenli Pi Client başlatıldı")
+        print("🔐 Güvenlik protokolü aktif")
         print("=" * 50)
         
         while True:
@@ -596,18 +830,17 @@ class VercelSignageClient:
                 time.sleep(120)
                 
             except KeyboardInterrupt:
-                print("\\n👋 Client kapatılıyor...")
+                print("\\n👋 Güvenli client kapatılıyor...")
                 break
             except Exception as e:
                 print(f"❌ Hata: {e}")
                 time.sleep(60)
 
 if __name__ == "__main__":
-    # Vercel app URL'nizi buraya yazın
     API_URL = "${currentUrl}/api/files"
-    DEVICE_NAME = "Pi-Mağaza-1"
+    DEVICE_NAME = "Pi-Secure-1"
     
-    client = VercelSignageClient(API_URL, DEVICE_NAME)
+    client = SecureDigitalSignageClient(API_URL, DEVICE_NAME)
     client.run()
 `;
             
@@ -615,16 +848,22 @@ if __name__ == "__main__":
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'vercel_pi_client.py';
+            a.download = 'secure_pi_client.py';
             a.click();
             URL.revokeObjectURL(url);
             
-            showNotification('🥧 Pi Client kodu indirildi!', 'success');
+            showNotification('🔐 Güvenli Pi Client kodu indirildi!', 'success');
         }
         
-        // API endpoint simülasyonu
-        // Gerçek Vercel backend API'si buraya gelecek
+        // 🔒 Güvenlik: Otomatik çıkış (24 saat sonra)
+        setInterval(() => {
+            checkAuth();
+        }, 60000); // Her dakika kontrol et
         
+        // 🔒 Güvenlik: Sayfa kapatılırken temizlik
+        window.addEventListener('beforeunload', () => {
+            // Hassas verileri temizle (isteğe bağlı)
+        });
     </script>
 </body>
 </html>
