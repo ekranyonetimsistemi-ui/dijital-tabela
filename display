@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📺 Ekran Kontrolü</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+        
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Canlı Önizleme */
+        .live-preview {
+            height: 400px;
+            background: #000;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #27ae60;
+        }
+        
+        .preview-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+        }
+        
+        .preview-content img,
+        .preview-content video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .preview-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        /* İçerik Listesi */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .content-card.assigned {
+            border-color: #27ae60;
+            background: #f0fff4;
+        }
+        
+        .content-thumbnail {
+            width: 100%;
+            height: 100px;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            overflow: hidden;
+        }
+        
+        .content-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .content-info {
+            padding: 10px;
+            font-size: 12px;
+        }
+        
+        /* Ekran Bilgi Kartı */
+        .screen-info-card {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        /* Atanmış İçerikler */
+        .assigned-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .assigned-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            gap: 15px;
+        }
+        
+        .assigned-thumbnail {
+            width: 50px;
+            height: 50px;
+            background: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .assigned-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Butonlar */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .btn-warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .btn-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        /* İstatistikler */
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-mini {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-mini-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* Bildirimler */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .notification.success { background: #27ae60; }
+        .notification.error { background: #e74c3c; }
+        .notification.info { background: #3498db; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .right-panel {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .live-preview {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 id="screenTitle">📺 Ekran Kontrolü</h1>
+                <p style="color: #666;" id="screenSubtitle">Ekran yükleniyor...</p>
+            </div>
+            <div>
+                <button class="btn btn-info" onclick="openDisplayScreen()">👁️ Canlı Görüntüle</button>
+                <button class="btn btn-warning" onclick="refreshScreen()">🔄 Yenile</button>
+                <button class="btn" onclick="window.close()">◀️ Geri Dön</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Sol Panel - Canlı Önizleme ve İçerik Kütüphanesi -->
+            <div class="left-panel">
+                <!-- Canlı Önizleme -->
+                <div class="section">
+                    <h3 style="margin-bottom: 20px;">📺 Canlı Önizleme</h3>
+                    <div class="live-preview" id="livePreview">
+                        <div class="preview-content" id="previewContent">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3em; margin-bottom: 15px;">📺</div>
+                                <div>Önizleme yükleniyor...</div>
+                            </div>
+                        </div>
+                        <div class="preview-overlay" id="previewOverlay">Bağlanıyor...</div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                        <button class="btn btn-small" onclick="prevContent()">◀️ Önceki</button>
+                        <button class="btn btn-small" onclick="nextContent()">▶️ Sonraki</button>
+                        <button class="btn btn-small btn-warning" onclick="stopPreview()">⏹️ Durdur</button>
+                    </div>
+                </div>
+
+                <!-- İçerik Kütüphanesi -->
+                <div class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>📁 İçerik Kütüphanesi</h3>
+                        <button class="btn btn-small btn-success" onclick="assignSelectedContent()">✅ Seçilenleri Ata</button>
+                    </div>
+                    
+                    <div class="content-grid" id="contentLibrary">
+                        <!-- İçerikler buraya yüklenecek -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Panel - Ekran Bilgileri ve Kontroller -->
+            <div class="right-panel">
+                <!-- Ekran Bilgi Kartı -->
+                <div class="screen-info-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h3 id="screenName">Ekran Adı</h3>
+                            <p id="screenLocation" style="opacity: 0.9; margin: 5px 0;">Konum</p>
+                            <p id="screenGroup" style="opacity: 0.8; font-size: 14px;">Grup</p>
+                        </div>
+                        <div class="status-indicator" id="screenStatus">
+                            <span>🔴</span> Çevrimdışı
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 14px; opacity: 0.9;">
+                        <div>📅 Son görülme: <span id="lastSeen">-</span></div>
+                        <div>🆔 Ekran ID: <span id="screenId">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Atanmış İçerikler -->
+                <div class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>🎯 Atanmış İçerikler</h3>
+                        <button class="btn btn-small btn-danger" onclick="clearAllContent()">🗑️ Tümünü Kaldır</button>
+                    </div>
+                    
+                    <div class="assigned-content" id="assignedContent">
+                        <!-- Atanmış içerikler buraya -->
+                    </div>
+                </div>
+
+                <!-- İstatistikler -->
+                <div class="section">
+                    <h3 style="margin-bottom: 15px;">📊 İstatistikler</h3>
+                    <div class="stats-mini">
+                        <div class="stat-mini">
+                            <div class="stat-mini-number" id="assignedCount">0</div>
+                            <div style="font-size: 12px; color: #666;">Atanmış İçerik</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-number" id="totalDuration">0</div>
+                            <div style="font-size: 12px; color: #666;">Toplam Süre (dk)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hızlı İşlemler -->
+                <div class="section">
+                    <h3 style="margin-bottom: 15px;">⚡ Hızlı İşlemler</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn btn-success" onclick="assignRandomContent()">🎲 Rastgele İçerik Ata</button>
+                        <button class="btn btn-info" onclick="copyFromGroup()">👥 Gruptan Kopyala</button>
+                        <button class="btn btn-warning" onclick="scheduleContent()">⏰ Zamanlama Ayarla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bildirim -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global değişkenler
+        let currentScreenId = null;
+        let currentScreen = null;
+        let uploadedFiles = [];
+        let assignments = {};
+        let selectedContentIndexes = [];
+        let previewInterval = null;
+        let previewIndex = 0;
+
+        // Sayfa yüklendiğinde
+        window.addEventListener('load', () => {
+            initializeScreenControl();
+        });
+
+        // Ekran kontrol sistemi başlatma
+        function initializeScreenControl() {
+            // URL parametresinden ekran ID'sini al
+            const urlParams = new URLSearchParams(window.location.search);
+            currentScreenId = urlParams.get('id');
+            
+            if (!currentScreenId) {
+                showNotification('❌ Geçersiz ekran ID\'si!', 'error');
+                return;
+            }
+
+            loadSystemData();
+            loadScreenData();
+            loadContentLibrary();
+            loadAssignedContent();
+            startLivePreview();
+            
+            console.log('📺 Ekran kontrolü başlatıldı:', currentScreenId);
+        }
+
+        // Sistem verilerini yükle
+        function loadSystemData() {
+            uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+            assignments = JSON.parse(localStorage.getItem('content_assignments') || '{}');
+        }
+
+        // Ekran verilerini yükle
+        function loadScreenData() {
+            const screens = JSON.parse(localStorage.getItem('digital_screens') || '[]');
+            const groups = JSON.parse(localStorage.getItem('screen_groups') || '[]');
+            
+            currentScreen = screens.find(s => s.id === currentScreenId);
+            
+            if (!currentScreen) {
+                showNotification('❌ Ekran bulunamadı!', 'error');
+                return;
+            }
+
+            // Ekran bilgilerini göster
+            document.getElementById('screenTitle').textContent = `📺 ${currentScreen.name}`;
+            document.getElementById('screenSubtitle').textContent = `${currentScreen.location} - Ekran Kontrolü`;
+            document.getElementById('screenName').textContent = currentScreen.name;
+            document.getElementById('screenLocation').textContent = currentScreen.location;
+            document.getElementById('screenId').textContent = currentScreen.id;
+            
+            const group = groups.find(g => g.id === currentScreen.groupId);
+            document.getElementById('screenGroup').textContent = group ? group.name : 'Grup Yok';
+            
+            // Durum güncelle
+            const statusEl = document.getElementById('screenStatus');
+            const timeDiff = Date.now() - new Date(currentScreen.lastSeen).getTime();
+            const minutesAgo = Math.floor(timeDiff / 60000);
+            
+            if (currentScreen.status === 'online') {
+                statusEl.innerHTML = '<span>🟢</span> Aktif';
+                statusEl.style.background = 'rgba(39, 174, 96, 0.3)';
+            } else {
+                statusEl.innerHTML = '<span>🔴</span> Çevrimdışı';
+                statusEl.style.background = 'rgba(231, 76, 60, 0.3)';
+            }
+            
+            document.getElementById('lastSeen').textContent = 
+                minutesAgo < 1 ? 'Şimdi' : minutesAgo + ' dakika önce';
+        }
+
+        // İçerik kütüphanesini yükle
+        function loadContentLibrary() {
+            const container = document.getElementById('contentLibrary');
+            
+            if (uploadedFiles.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                        <p>Henüz içerik yüklenmemiş</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const assignedIndexes = assignments[currentScreenId] ? 
+                assignments[currentScreenId].map(a => a.contentIndex) : [];
+
+            container.innerHTML = uploadedFiles.map((file, index) => {
+                const isAssigned = assignedIndexes.includes(index);
+                
+                return `
+                    <div class="content-card ${isAssigned ? 'assigned' : ''}" 
+                         onclick="toggleContentSelection(${index})" 
+                         data-index="${index}">
+                        <div class="content-thumbnail">
+                            ${file.type === 'image' ? 
+                                `<img src="${file.data}" alt="${file.name}">` : 
+                                `🎥`
+                            }
+                        </div>
+                        <div class="content-info">
+                            <div style="font-weight: bold; margin-bottom: 3px;">
+                                ${file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name}
+                            </div>
+                            <div style="color: #666;">
+                                ${file.type === 'image' ? '🖼️ Fotoğraf' : '🎥 Video'}
+                            </div>
+                            ${isAssigned ? '<div style="color: #27ae60; font-weight: bold; margin-top: 5px;">✅ Atandı</div>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Atanmış içerikleri yükle
+        function loadAssignedContent() {
+            const container = document.getElementById('assignedContent');
+            const screenAssignments = assignments[currentScreenId] || [];
+            
+            if (screenAssignments.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        <div style="font-size: 2em; margin-bottom: 10px;">📝</div>
+                        <p>Bu ekrana henüz içerik atanmamış</p>
+                    </div>
+                `;
+                document.getElementById('assignedCount').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = screenAssignments.map((assignment, index) => {
+                const file = uploadedFiles[assignment.contentIndex];
+                if (!file) return '';
+                
+                return `
+                    <div class="assigned-item">
+                        <div class="assigned-thumbnail">
+                            ${file.type === 'image' ? 
+                                `<img src="${file.data}" alt="${file.name}">` : 
+                                `🎥`
+                            }
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; margin-bottom: 3px;">${file.name}</div>
+                            <div style="font-size: 12px; color: #666;">
+                                ${file.type === 'image' ? '🖼️ Fotoğraf' : '🎥 Video'} • 
+                                ${new Date(assignment.assignedAt).toLocaleDateString('tr-TR')}
+                            </div>
+                        </div>
+                        <button class="btn btn-small btn-danger" onclick="removeAssignment(${assignment.contentIndex})">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('assignedCount').textContent = screenAssignments.length;
+            
+            // Toplam süre hesapla (demo)
+            const totalDuration = screenAssignments.length * 8; // Her içerik 8 saniye
+            document.getElementById('totalDuration').textContent = Math.ceil(totalDuration / 60);
+        }
+
+        // İçerik seçimi toggle
+        function toggleContentSelection(index) {
+            const card = document.querySelector(`[data-index="${index}"]`);
+            
+            if (selectedContentIndexes.includes(index)) {
+                selectedContentIndexes = selectedContentIndexes.filter(i => i !== index);
+                card.style.border = '2px solid transparent';
+            } else {
+                selectedContentIndexes.push(index);
+                card.style.border = '2px solid #667eea';
+            }
+        }
+
+        // Seçili içerikleri ata
+        function assignSelectedContent() {
+            if (selectedContentIndexes.length === 0) {
+                showNotification('⚠️ Lütfen içerik seçin!', 'error');
+                return;
+            }
+
+            if (!assignments[currentScreenId]) {
+                assignments[currentScreenId] = [];
+            }
+
+            selectedContentIndexes.forEach(index => {
+                const file = uploadedFiles[index];
+                const existingAssignment = assignments[currentScreenId].find(a => a.contentIndex === index);
+                
+                if (!existingAssignment) {
+                    assignments[currentScreenId].push({
+                        contentIndex: index,
+                        contentName: file.name,
+                        assignedAt: new Date().toISOString(),
+                        type: 'screen'
+                    });
+                }
+            });
+
+            // LocalStorage'a kaydet
+            localStorage.setItem('content_assignments', JSON.stringify(assignments));
+            
+            // Aktivite ekle
+            const activities = JSON.parse(localStorage.getItem('system_activities') || '[]');
+            activities.push({
+                id: Date.now(),
+                message: `${selectedContentIndexes.length} içerik atandı: ${currentScreen.name}`,
+                time: new Date().toISOString()
+            });
+            localStorage.setItem('system_activities', JSON.stringify(activities));
+
+            // Arayüzü güncelle
+            loadContentLibrary();
+            loadAssignedContent();
+            selectedContentIndexes = [];
+            
+            showNotification(`✅ ${selectedContentIndexes.length} içerik atandı!`, 'success');
+        }
+
+        // Atamayı kaldır
+        function removeAssignment(contentIndex) {
+            if (confirm('Bu içeriği ekrandan kaldırmak istediğinizden emin misiniz?')) {
+                assignments[currentScreenId] = assignments[currentScreenId].filter(a => a.contentIndex !== contentIndex);
+                localStorage.setItem('content_assignments', JSON.stringify(assignments));
+                
+                loadContentLibrary();
+                loadAssignedContent();
+                
+                showNotification('🗑️ İçerik kaldırıldı!', 'success');
+            }
+        }
+
+        // Tüm içerikleri kaldır
+        function clearAllContent() {
+            if (confirm('Bu ekrandaki tüm içerikleri kaldırmak istediğinizden emin misiniz?')) {
+                assignments[currentScreenId] = [];
+                localStorage.setItem('content_assignments', JSON.stringify(assignments));
+                
+                loadContentLibrary();
+                loadAssignedContent();
+                
+                showNotification('🗑️ Tüm içerikler kaldırıldı!', 'success');
+            }
+        }
+
+        // Canlı önizlemeyi başlat
+        function startLivePreview() {
+            const screenAssignments = assignments[currentScreenId] || [];
+            
+            if (screenAssignments.length === 0) {
+                document.getElementById('previewContent').innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📺</div>
+                        <div>İçerik atanmamış</div>
+                    </div>
+                `;
+                document.getElementById('previewOverlay').textContent = 'İçerik Yok';
+                return;
+            }
+
+            showPreviewContent(0);
+            
+            // Otomatik geçiş
+            if (screenAssignments.length > 1) {
+                previewInterval = setInterval(() => {
+                    previewIndex = (previewIndex + 1) % screenAssignments.length;
+                    showPreviewContent(previewIndex);
+                }, 3000); // 3 saniyede bir geçiş
+            }
+        }
+
+        // Önizleme içeriği göster
+        function showPreviewContent(index) {
+            const screenAssignments = assignments[currentScreenId] || [];
+            if (index >= screenAssignments.length) return;
+            
+            const assignment = screenAssignments[index];
+            const file = uploadedFiles[assignment.contentIndex];
+            
+            if (!file) return;
+            
+            const container = document.getElementById('previewContent');
+            
+            if (file.type === 'image') {
+                container.innerHTML = `<img src="${file.data}" alt="${file.name}">`;
+            } else {
+                container.innerHTML = `
+                    <video src="${file.data}" autoplay muted loop>
+                        Tarayıcınız video oynatmayı desteklemiyor.
+                    </video>
+                `;
+            }
+            
+            document.getElementById('previewOverlay').textContent = 
+                `${index + 1}/${screenAssignments.length} - ${file.name}`;
+            
+            previewIndex = index;
+        }
+
+        // Önizleme kontrolleri
+        function nextContent() {
+            const screenAssignments = assignments[currentScreenId] || [];
+            if (screenAssignments.length === 0) return;
+            
+            previewIndex = (previewIndex + 1) % screenAssignments.length;
+            showPreviewContent(previewIndex);
+        }
+
+        function prevContent() {
+            const screenAssignments = assignments[currentScreenId] || [];
+            if (screenAssignments.length === 0) return;
+            
+            previewIndex = previewIndex === 0 ? screenAssignments.length - 1 : previewIndex - 1;
+            showPreviewContent(previewIndex);
+        }
+
+        function stopPreview() {
+            if (previewInterval) {
+                clearInterval(previewInterval);
+                previewInterval = null;
+                showNotification('⏹️ Önizleme durduruldu', 'info');
+            }
+        }
+
+        // Hızlı işlemler
+        function assignRandomContent() {
+            if (uploadedFiles.length === 0) {
+                showNotification('⚠️ İçerik kütüphanesi boş!', 'error');
+                return;
+            }
+            
+            const randomCount = Math.min(3, uploadedFiles.length);
+            const randomIndexes = [];
+            
+            while (randomIndexes.length < randomCount) {
+                const randomIndex = Math.floor(Math.random() * uploadedFiles.length);
+                if (!randomIndexes.includes(randomIndex)) {
+                    randomIndexes.push(randomIndex);
+                }
+            }
+            
+            selectedContentIndexes = randomIndexes;
+            assignSelectedContent();
+        }
+
+        function copyFromGroup() {
+            if (!currentScreen.groupId) {
+                showNotification('⚠️ Bu ekran bir gruba dahil değil!', 'error');
+                return;
+            }
+            
+            const groupAssignments = assignments[currentScreen.groupId] || [];
+            if (groupAssignments.length === 0) {
+                showNotification('⚠️ Grup içeriği bulunamadı!', 'error');
+                return;
+            }
+            
+            // Grup içeriklerini kopyala
+            assignments[currentScreenId] = [...groupAssignments];
+            localStorage.setItem('content_assignments', JSON.stringify(assignments));
+            
+            loadContentLibrary();
+            loadAssignedContent();
+            startLivePreview();
+            
+            showNotification('✅ Grup içerikleri kopyalandı!', 'success');
+        }
+
+        function scheduleContent() {
+            showNotification('⏰ Zamanlama özelliği yakında...', 'info');
+        }
+
+        // Ekranı yenile
+        function refreshScreen() {
+            loadSystemData();
+            loadScreenData();
+            loadContentLibrary();
+            loadAssignedContent();
+            startLivePreview();
+            
+            showNotification('🔄 Ekran verileri yenilendi!', 'success');
+        }
+
+        // Görüntüleme ekranını aç
+        function openDisplayScreen() {
+            const displayUrl = `display_screen.html?id=${currentScreenId}`;
+            window.open(displayUrl, `display_${currentScreenId}`, 'width=1280,height=720,fullscreen=yes');
+            
+            showNotification('📺 Görüntüleme ekranı açıldı!', 'success');
+        }
+
+        // Bildirim göster
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => notification.style.display = 'none', 3000);
+        }
+
+        // Sayfa kapatılırken temizlik
+        window.addEventListener('beforeunload', () => {
+            if (previewInterval) {
+                clearInterval(previewInterval);
+            }
+        });
+
+        // Konsol bilgileri
+        console.log('📺 Ekran Kontrol Sistemi v1.0');
+        console.log('🎮 Kontroller:');
+        console.log('  • İçerik kartlarına tıklayarak seç/deselect');
+        console.log('  • Seçili içerikleri "Seçilenleri Ata" ile ata');
+        console.log('  • Önizleme kontrollerini kullan');
+    </script>
+</body>
+</html>
