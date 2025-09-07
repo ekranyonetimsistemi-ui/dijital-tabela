@@ -838,6 +838,15 @@
         // Periyodik güncellemeleri başlat
         function startPeriodicUpdates() {
             setInterval(async () => {
+                // Refresh komutu kontrolü
+                const refreshFlag = localStorage.getItem('refresh_all_screens');
+                if (refreshFlag && Date.now() - parseInt(refreshFlag) < 60000) { // Son 1 dakika içinde refresh komutu
+                    console.log('🔄 Admin panelinden yenileme komutu alındı');
+                    localStorage.removeItem('refresh_all_screens');
+                    location.reload();
+                    return;
+                }
+                
                 await loadContent();
                 
                 if (currentContent.length > 0 && document.getElementById('waitingScreen').classList.contains('hidden') === false) {
